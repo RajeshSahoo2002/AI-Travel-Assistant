@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SkyGuide AI - Interactive Airline & Travel Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo"><span>Sky</span>Guide</div>
+        <div class="version-badge">Airline AI v1.0</div>
+      </div>
+      
+      <form class="form-body" id="travel-form">
+        <div class="section-label">Flight Details</div>
+        
+        <div class="row2">
+          <div class="field">
+            <label for="origin">Origin (e.g. JFK)</label>
+            <input type="text" id="origin" placeholder="JFK" required>
+          </div>
+          <div class="field">
+            <label for="destination">Destination (e.g. LHR)</label>
+            <input type="text" id="destination" placeholder="LHR" required>
+          </div>
+        </div>
+        
+        <div class="row2">
+          <div class="field">
+            <label for="dep-date">Departure</label>
+            <input type="date" id="dep-date" required>
+          </div>
+          <div class="field">
+            <label for="ret-date">Return</label>
+            <input type="date" id="ret-date">
+          </div>
+        </div>
+        
+        <div class="row3">
+          <div class="field">
+            <label for="adults">Adults</label>
+            <input type="number" id="adults" value="1" min="1" required>
+          </div>
+          <div class="field">
+            <label for="children">Children</label>
+            <input type="number" id="children" value="0" min="0" required>
+          </div>
+          <div class="field">
+            <label for="infants">Infants</label>
+            <input type="number" id="infants" value="0" min="0" required>
+          </div>
+          <div class="field">
+            <label for="budget">Total Budget</label>
+            <input type="number" id="budget" value="30000" min="1" required>
+          </div>
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency">
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="INR">INR</option>
+              <option value="AED">AED</option>
+              <option value="JPY">JPY</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-label" style="margin-top: 15px;">Cabin / Travel Class</div>
+        <div class="row2">
+          <button type="button" class="style-opt active" data-value="economy">Economy</button>
+          <button type="button" class="style-opt" data-value="premium">Premium Eco</button>
+          <button type="button" class="style-opt" data-value="business">Business</button>
+          <button type="button" class="style-opt" data-value="first">First Class</button>
+        </div>
+
+        <div class="section-label" style="margin-top: 15px;">Trip Interests</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <button type="button" class="itag" data-value="food">Food</button>
+          <button type="button" class="itag" data-value="nature">Nature</button>
+          <button type="button" class="itag" data-value="art & culture">Art & Culture</button>
+          <button type="button" class="itag" data-value="adventure">Adventure</button>
+          <button type="button" class="itag" data-value="wellness & relaxation">Wellness & Relaxation</button>
+        </div>
+
+        <button type="submit" id="gen-btn" class="btn-generate" style="margin-top: 20px; width: 100%;">
+          ✨ Generate Airline Itinerary
+        </button>
+      </form>
+      
+      <!-- Agent Status Panel -->
+      <div class="agent-panel">
+        <div class="section-label" style="margin-top:0">AI Booking Agents</div>
+        
+        <div class="agent-row pending" id="agent-row-flight_agent">
+          <div class="agent-dot pending" id="dot-flight_agent"></div>
+          <div class="agent-name">Air Routes & Flights</div>
+          <div class="agent-badge pending" id="badge-flight_agent">Pending</div>
+        </div>
+        
+        <div class="agent-row pending" id="agent-row-hotel_agent">
+          <div class="agent-dot pending" id="dot-hotel_agent"></div>
+          <div class="agent-name">Accommodation</div>
+          <div class="agent-badge pending" id="badge-hotel_agent">Pending</div>
+        </div>
+
+        <div class="agent-row pending" id="agent-row-weather_agent">
+          <div class="agent-dot pending" id="dot-weather_agent"></div>
+          <div class="agent-name">Weather & Delays</div>
+          <div class="agent-badge pending" id="badge-weather_agent">Pending</div>
+        </div>
+
+        <div class="agent-row pending" id="agent-row-activity_agent">
+          <div class="agent-dot pending" id="dot-activity_agent"></div>
+          <div class="agent-name">Activities</div>
+          <div class="agent-badge pending" id="badge-activity_agent">Pending</div>
+        </div>
+        
+        <div class="agent-row pending" id="agent-row-fixer_agent">
+          <div class="agent-dot pending" id="dot-fixer_agent"></div>
+          <div class="agent-name">Fallback & Recovery</div>
+          <div class="agent-badge pending" id="badge-fixer_agent">Pending</div>
+        </div>
+        
+        <div class="agent-row pending" id="agent-row-budget_agent">
+          <div class="agent-dot pending" id="dot-budget_agent"></div>
+          <div class="agent-name">Cost Estimator</div>
+          <div class="agent-badge pending" id="badge-budget_agent">Pending</div>
+        </div>
+
+        <div class="agent-row pending" id="agent-row-itinerary_agent">
+          <div class="agent-dot pending" id="dot-itinerary_agent"></div>
+          <div class="agent-name">Master Planner</div>
+          <div class="agent-badge pending" id="badge-itinerary_agent">Pending</div>
+        </div>
+
+        <div id="log-scroll" class="log-scroll"></div>
+      </div>
+      
+      <div class="tech-strip">
+        <span class="tech-chip">Amadeus Flight API</span>
+        <span class="tech-chip">Agents</span>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main">
+      <!-- JavaScript will inject content here via showWelcome(), etc -->
+    </main>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
